@@ -8,5 +8,6 @@ import com.books.library.tables.Books;
 @Repository
 public interface BooksRepository extends JpaRepository<Books, Long>{
 
+	public Books findBooksByBookTitleAndBookAuthor(String bookTitle, String bookAuthor);
 	public Books findBooksByBookTitle(String bookTitle);
 }

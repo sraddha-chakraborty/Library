@@ -39,29 +39,26 @@ public class LibraryServiceImpl implements LibraryService{
 
 	@Override
 	public String addNewBook(Books book) {
-		if (booksRepo.findBooksByBookTitle(book.getBookTitle()) != null)
+		if (booksRepo.findBooksByBookTitleAndBookAuthor(book.getBookTitle(), book.getBookAuthor()) != null)
 		{
 			throw new IllegalStateException("Book is already present in database!");
 		}
-		else
-		{
-			booksRepo.save(book);
 			
-			if (authorRepo.findAuthorsByAuthorName(book.getBookAuthor()) == null)
-			{
-				authorRepo.save(new Authors(book.getBookAuthor()));
-			}
+		booksRepo.save(book);
+			
+		if (authorRepo.findAuthorsByAuthorName(book.getBookAuthor()) == null)
+		{
+			authorRepo.save(new Authors(book.getBookAuthor()));
 		}
-		
 		return "New Book added to database successfully!";
 	}
 
 	@Override
 	@Transactional
 	public String addCopiesOfBook(Books book) {
-		if (booksRepo.findBooksByBookTitle(book.getBookTitle()) != null)
+		if (booksRepo.findBooksByBookTitleAndBookAuthor(book.getBookTitle(), book.getBookAuthor()) != null)
 		{
-			Books getBook = booksRepo.findBooksByBookTitle(book.getBookTitle());
+			Books getBook = booksRepo.findBooksByBookTitleAndBookAuthor(book.getBookTitle(), book.getBookAuthor());
 			Integer existingBookCount = getBook.getBookCount();
 			getBook.setBookCount(existingBookCount+book.getBookCount());
 		}
@@ -70,7 +67,7 @@ public class LibraryServiceImpl implements LibraryService{
 			throw new IllegalStateException("Book not found in database! Please add it as a new book!");
 		}
 		
-		return "Book copy added to database successfully! Current Book count for "+booksRepo.findBooksByBookTitle(book.getBookTitle()).getBookTitle()+" is: "+booksRepo.findBooksByBookTitle(book.getBookTitle()).getBookCount();
+		return "Book copy added to database successfully! Current Book count for "+booksRepo.findBooksByBookTitleAndBookAuthor(book.getBookTitle(), book.getBookAuthor()).getBookTitle()+" is: "+booksRepo.findBooksByBookTitleAndBookAuthor(book.getBookTitle(), book.getBookAuthor()).getBookCount();
 	
 //If u want to update the counter of a book by searching for the book based on id. U need to add the "bookId" to the payload json as well.
 
